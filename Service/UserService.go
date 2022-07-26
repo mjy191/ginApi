@@ -21,17 +21,25 @@ type customerUser struct {
 	Name string `json:"name"`
 }
 
-type AddParam struct {
-	Age      int    `form:"age" json:"age"`
-	Name     string `form:"name" json:"name" binding:"required"`
-	Page     int    `form:"page" json:"page"`
-	UserName string `form:"username" json:"username" binding:"required,min=1" msg:"用户名不能为空"`
-	Password string `form:"password" json:"password" binding:"required,min=1" msg:"密码不能为空"`
-	Phone    string `form:"phone" json:"phone" binding:"required" msg:"手机不能为空"`
-}
-
 type IdParam struct {
 	Id int `form:"id" json:"id" binding:"required" msg:"id必填"`
+}
+
+type UserNameParam struct {
+	UserName string `form:"username" json:"username" binding:"required,min=1" msg:"用户名不能为空"`
+}
+
+type PasswordParam struct {
+	Password string `form:"password" json:"password" binding:"required,min=1" msg:"密码不能为空"`
+}
+
+type AddParam struct {
+	Age  int    `form:"age" json:"age"`
+	Name string `form:"name" json:"name" binding:"required"`
+	Page int    `form:"page" json:"page"`
+	UserNameParam
+	PasswordParam
+	Phone string `form:"phone" json:"phone" binding:"required" msg:"手机不能为空"`
 }
 
 type EditParam struct {
@@ -44,8 +52,8 @@ type DelParam struct {
 }
 
 type LoginParam struct {
-	UserName string `form:"username" json:"username" binding:"required,min=1" msg:"用户名不能为空"`
-	Password string `form:"password" json:"password" binding:"required,min=1" msg:"密码不能为空"`
+	UserNameParam
+	PasswordParam
 }
 
 func (u *UserCopy) MarshalJSON() ([]byte, error) {
@@ -108,15 +116,15 @@ func (this UserService) Edit(param *EditParam) {
 	user.Age = param.Age
 	phone.Phone = param.Phone
 	tx := Models.DB.Begin()
-	tx.Model(&user).Where("id=?", param.Id).Updates(&user)
-	tx.Model(&phone).Where("userId=?", param.Id).Updates(&phone)
+	tx.Model(&user).Where("id=?", param.IdParam).Updates(&user)
+	tx.Model(&phone).Where("userId=?", param.IdParam).Updates(&phone)
 	tx.Commit()
 }
 
 func (this UserService) Del(param *DelParam) {
 	tx := Models.DB.Begin()
-	tx.Delete(&Models.User{}, param.Id)
-	tx.Where("userId=?", param.Id).Delete(&Models.Phone{})
+	tx.Delete(&Models.User{}, param.IdParam)
+	tx.Where("userId=?", param.IdParam).Delete(&Models.Phone{})
 	tx.Commit()
 }
 
