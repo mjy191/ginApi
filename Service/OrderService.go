@@ -72,8 +72,9 @@ func (this OrderService) Lists(param *OrderParam) ([]*orderCopy, int64, int64, e
 	var lastPage int64
 	query.Count(&total)
 	Tools.GetPage(total, &lastPage, &param.Page, pageSize)
-	//获取数据
+	// 获取数据
 	query = query.Limit(int(pageSize)).Offset(int(pageSize * (param.Page - 1)))
+	// 预加载User字段
 	err := query.Preload("User").Find(&result).Error
 	if err != nil {
 		return nil, 0, 0, err

@@ -3,7 +3,6 @@ package Service
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"ginApi/Common/Enum"
 	"ginApi/Common/Tools"
 	"ginApi/Models"
@@ -88,11 +87,9 @@ func (this UserService) Add(param *AddParam) int {
 
 	phone.Phone = param.Phone
 
-	fmt.Println(user)
 	//事务提交
 	tx := Models.DB.Begin()
 	tx.Model(&userCopy).Where("username=?", user.UserName).First(&userCopy)
-	fmt.Println(userCopy)
 	if userCopy.Id != 0 {
 		tx.Rollback()
 		panic(map[string]interface{}{
@@ -116,15 +113,15 @@ func (this UserService) Edit(param *EditParam) {
 	user.Age = param.Age
 	phone.Phone = param.Phone
 	tx := Models.DB.Begin()
-	tx.Model(&user).Where("id=?", param.IdParam).Updates(&user)
-	tx.Model(&phone).Where("userId=?", param.IdParam).Updates(&phone)
+	tx.Model(&user).Where("id=?", param.Id).Updates(&user)
+	tx.Model(&phone).Where("userId=?", param.Id).Updates(&phone)
 	tx.Commit()
 }
 
 func (this UserService) Del(param *DelParam) {
 	tx := Models.DB.Begin()
-	tx.Delete(&Models.User{}, param.IdParam)
-	tx.Where("userId=?", param.IdParam).Delete(&Models.Phone{})
+	tx.Delete(&Models.User{}, param.Id)
+	tx.Where("userId=?", param.Id).Delete(&Models.Phone{})
 	tx.Commit()
 }
 

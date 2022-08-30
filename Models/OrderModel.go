@@ -43,7 +43,6 @@ func (t *XTime) Scan(v interface{}) error {
 }
 
 func (t XTime) MarshalJSON() ([]byte, error) {
-	fmt.Printf("v=%V,t=%T", t, t)
 	if &t == nil || t.IsZero() {
 		return []byte("null"), nil
 	}

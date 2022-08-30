@@ -1,7 +1,6 @@
 package Api
 
 import (
-	"fmt"
 	"ginApi/Common/Tools"
 	"ginApi/Controller"
 	"ginApi/Models"
@@ -21,9 +20,7 @@ func (this UserController) Lists(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(userParam)
 	data, _ := Service.UserService{}.Lists(&userParam)
-	fmt.Println(data)
 	this.Success(c, data)
 }
 
@@ -36,7 +33,6 @@ func (this UserController) Add(c *gin.Context) {
 	}()
 	var param Service.AddParam
 	if err := c.ShouldBindBodyWith(&param, binding.JSON); err != nil {
-		fmt.Println(param)
 		Tools.GetError(err, param)
 		return
 	}
@@ -53,7 +49,6 @@ func (this UserController) Edit(c *gin.Context) {
 	}()
 	var param Service.EditParam
 	if err := c.ShouldBindBodyWith(&param, binding.JSON); err != nil {
-		fmt.Println(param)
 		Tools.GetError(err, param)
 		return
 	}
@@ -64,11 +59,9 @@ func (this UserController) Edit(c *gin.Context) {
 func (this UserController) Del(c *gin.Context) {
 	var delParam Service.DelParam
 	err := c.ShouldBindBodyWith(&delParam, binding.JSON)
-	fmt.Println(delParam)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(delParam)
 	Service.UserService{}.Del(&delParam)
 	this.Success(c, map[string]string{})
 }
@@ -83,10 +76,8 @@ func (this UserController) Login(c *gin.Context) {
 	var loginParam Service.LoginParam
 	err := c.ShouldBindBodyWith(&loginParam, binding.JSON)
 	if err != nil {
-		fmt.Println(loginParam)
 		Tools.GetError(err, loginParam)
 	}
-	fmt.Println(loginParam)
 	data, _ := Service.UserService{}.Login(&loginParam)
 	var token string
 	var res map[string]string
