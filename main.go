@@ -7,9 +7,6 @@ import (
 )
 
 func main() {
-	//gin.DisableConsoleColor()
-	//file,_ := os.Create("access.log")
-	//gin.DefaultWriter = io.MultiWriter(file,os.Stdout)
 	r := gin.Default()
 	r.Use(Middleware.LoggerMiddleware{}.Handle())
 	r.Static("/static", "./static")
