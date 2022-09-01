@@ -31,7 +31,7 @@ func (this LoggerMiddleware) Handle() gin.HandlerFunc {
 				c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 			}
 		}
-		accessStr := fmt.Sprintf("url[%s] ip[%s] method[%s] post_data[%s] body[%s]\n",
+		accessStr := fmt.Sprintf("url[%s] ip[%s] method[%s] post_data[%s] body[%s]",
 			c.Request.URL,
 			c.ClientIP(),
 			c.Request.Method,
@@ -43,7 +43,7 @@ func (this LoggerMiddleware) Handle() gin.HandlerFunc {
 		c.Writer = blw
 		c.Next()
 		response := blw.body.String()
-		response = fmt.Sprintf("url[%s] response[%s]\n",
+		response = fmt.Sprintf("url[%s] response[%s]",
 			c.Request.URL,
 			response,
 		)
