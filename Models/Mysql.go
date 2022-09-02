@@ -3,6 +3,7 @@ package Models
 import (
 	"fmt"
 	"ginApi/Common/Logger"
+	"ginApi/Common/Tools"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -31,9 +32,13 @@ func (w Write) Printf(format string, values ...interface{}) {
 }
 
 func init() {
-	root := "root"
-	password := "123456"
-	dns := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/go?charset=utf8&parseTime=True&loc=Local", root, password)
+	dns := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=%v&parseTime=True&loc=Local",
+		Tools.Config.Get("mysql.user"),
+		Tools.Config.Get("mysql.password"),
+		Tools.Config.Get("mysql.host"),
+		Tools.Config.Get("mysql.port"),
+		Tools.Config.Get("mysql.db"),
+		Tools.Config.Get("mysql.chaSet"))
 
 	newLogger := logger.New(
 		Write{},
