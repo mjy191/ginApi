@@ -26,7 +26,7 @@ func (this CheckSignMiddleware) Handle() gin.HandlerFunc {
 		}
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 		body := string(data[0:len(data)])
-		key := "abc123"
+		key := Tools.Config.GetString("signKey")
 		sign := Tools.Sha1(key + body + key)
 		signPreStr := fmt.Sprintf("url[%s] logid[%s] signPre[%s]",
 			c.Request.URL,
