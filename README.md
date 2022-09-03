@@ -25,7 +25,7 @@
 [root@localhost 202209]# cd logs/202209
 [root@localhost 202209]# grep cd79e47c610343cbb3345c8603e7dacd 2022090312.log 
 2022/09/03 12:11:42 logid[cd79e47c610343cbb3345c8603e7dacd]  url[/api/user/login?sign=f9e9eb19af3aa19f0fe83bc5b43742c9ec65dc57] ip[127.0.0.1] method[POST] post_data[] body[{"username": "zhangsan", "password": "123456", "token": "A5tvtvTZR56Vekj8K7V71I25OpVuQ8jg"}]
-2022/09/03 12:11:42 logid[cd79e47c610343cbb3345c8603e7dacd]  url[/api/user/login?sign=f9e9eb19af3aa19f0fe83bc5b43742c9ec65dc57] logid[cd79e47c610343cbb3345c8603e7dacd] signPre[abc123{"username": "zhangsan", "password": "123456", "token": "A5tvtvTZR56Vekj8K7V71I25OpVuQ8jg"}abc123]
+2022/09/03 12:11:42 logid[cd79e47c610343cbb3345c8603e7dacd]  url[/api/user/login?sign=f9e9eb19af3aa19f0fe83bc5b43742c9ec65dc57] signPre[abc123{"username": "zhangsan", "password": "123456", "token": "A5tvtvTZR56Vekj8K7V71I25OpVuQ8jg"}abc123]
 2022/09/03 12:11:42 logid[cd79e47c610343cbb3345c8603e7dacd]  mysql[SELECT * FROM `user` WHERE username='zhangsan' ORDER BY `user`.`id` LIMIT 1] time[9.4602] filePath[D:/www/go/ginApi/Service/UserService.go:130]
 2022/09/03 12:11:42 logid[cd79e47c610343cbb3345c8603e7dacd]  url[/api/user/login?sign=f9e9eb19af3aa19f0fe83bc5b43742c9ec65dc57] response[{"code":1,"data":{"token":"PqrUdnsC0kE7VARhqoMGY5Jm4zwkfixr"},"logid":"cd79e47c610343cbb3345c8603e7dacd","msg":"success"}]
 ```

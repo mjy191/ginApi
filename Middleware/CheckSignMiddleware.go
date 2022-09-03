@@ -28,9 +28,8 @@ func (this CheckSignMiddleware) Handle() gin.HandlerFunc {
 		body := string(data[0:len(data)])
 		key := Tools.Config.GetString("signKey")
 		sign := Tools.Sha1(key + body + key)
-		signPreStr := fmt.Sprintf("url[%s] logid[%s] signPre[%s]",
+		signPreStr := fmt.Sprintf("url[%s] signPre[%s]",
 			c.Request.URL,
-			Logger.Logid,
 			key+body+key,
 		)
 		Logger.Println(signPreStr)
