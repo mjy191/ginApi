@@ -21,7 +21,7 @@ func (this CheckSignMiddleware) Handle() gin.HandlerFunc {
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 				"code": Enum.CodeSignError,
-				"msg":  "签名错误",
+				"msg":  Enum.ErrMsg[Enum.CodeSignError],
 			})
 		}
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
@@ -36,7 +36,7 @@ func (this CheckSignMiddleware) Handle() gin.HandlerFunc {
 		if sign != paramSign {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 				"code": Enum.CodeSignError,
-				"msg":  "签名错误",
+				"msg":  Enum.ErrMsg[Enum.CodeSignError],
 			})
 		} else {
 			c.Next()

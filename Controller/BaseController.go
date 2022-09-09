@@ -12,7 +12,7 @@ type BaseController struct{}
 func (this BaseController) Success(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":  Enum.CodeSuccess,
-		"msg":   "success",
+		"msg":   Enum.ErrMsg[Enum.CodeSuccess],
 		"logid": Logger.Logid,
 		"data":  data,
 	})

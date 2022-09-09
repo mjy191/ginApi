@@ -23,7 +23,7 @@ func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 		if _, ok := param["token"]; !ok {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 				"code": Enum.CodeTokenError,
-				"msg":  "token错误",
+				"msg":  Enum.ErrMsg[Enum.CodeTokenError],
 			})
 			return
 		}
@@ -31,7 +31,7 @@ func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 		if len(users) == 0 {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 				"code": Enum.CodeTokenError,
-				"msg":  "token错误",
+				"msg":  Enum.ErrMsg[Enum.CodeTokenError],
 			})
 			return
 		}
