@@ -19,6 +19,13 @@ func (this CheckJwtMiddleware) Handle() gin.HandlerFunc {
 		}
 		token := c.Request.Header.Get("x-token")
 		Logger.Println(fmt.Sprintf("x-token[%s]", token))
+		if token == "" {
+			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
+				"code": Enum.CodeTokenError,
+				"msg":  Enum.ErrMsg[Enum.CodeTokenError],
+			})
+			return
+		}
 		userId, err := Tools.Jwt{}.ValidateToken(token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{

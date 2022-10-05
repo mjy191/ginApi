@@ -1,12 +1,14 @@
 package Middleware
 
 import (
+	"fmt"
 	"ginApi/Common/Enum"
+	"ginApi/Common/Logger"
 	"ginApi/Common/Tools"
 	"ginApi/Models"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"net/http"
+	"strconv"
 )
 
 type CheckTokenMiddleware struct{}
@@ -17,22 +19,16 @@ func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		param := make(map[string]interface{})
-		if err := c.ShouldBindBodyWith(&param, binding.JSON); err != nil {
-			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
-				"code": Enum.CodeParamError,
-				"msg":  "参数解析错误",
-			})
-			return
-		}
-		if _, ok := param["token"]; !ok {
+		token := c.Request.Header.Get("x-token")
+		Logger.Println(fmt.Sprintf("x-token[%s]", token))
+		if token == "" {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 				"code": Enum.CodeTokenError,
 				"msg":  Enum.ErrMsg[Enum.CodeTokenError],
 			})
 			return
 		}
-		users, _ := Models.RedisDb.HGetAll("token:" + param["token"].(string)).Result()
+		users, _ := Models.RedisDb.HGetAll("token:" + token).Result()
 		if len(users) == 0 {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 				"code": Enum.CodeTokenError,
@@ -40,7 +36,10 @@ func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 			})
 			return
 		}
-		c.Set("users", users)
+		if value, ok := users["userId"]; ok {
+			userId, _ := strconv.Atoi(value)
+			c.Set("userId", userId)
+		}
 		c.Next()
 	}
 }
