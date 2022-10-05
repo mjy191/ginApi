@@ -9,4 +9,9 @@ mysql:
 redis:
     host: 127.0.0.1
     port: 6379
+token:
+    type: jwt #token、jwt
+    key: ukwfE14NEkxQ0ja1yePwU0HABcTIB0gs #jwt的秘钥
+    length: 32 #token的长度
+    expire: 7200
 signKey: abc123

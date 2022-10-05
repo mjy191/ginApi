@@ -1,6 +1,7 @@
 package Api
 
 import (
+	"ginApi/Common/Enum"
 	"ginApi/Common/Tools"
 	"ginApi/Controller"
 	"ginApi/Models"
@@ -79,22 +80,46 @@ func (this UserController) Login(c *gin.Context) {
 		Tools.GetError(err, loginParam)
 	}
 	data, _ := Service.UserService{}.Login(&loginParam)
+
+	// 生成token
 	var token string
-	var res map[string]string
-	for {
-		token = Tools.RandString(32)
-		res, _ = Models.RedisDb.HGetAll(token).Result()
-		if len(res) != 0 {
-			token = Tools.RandString(32)
-		} else {
-			break
+	if Tools.Config.GetString("token.type") == "jwt" {
+		result, err := Tools.Jwt{}.CreateToken(data.Id)
+		if err != nil {
+			this.Fail(c, map[string]interface{}{
+				"code": Enum.CodeSystemError,
+				"msg":  Enum.ErrMsg[Enum.CodeSystemError],
+			})
+			return
 		}
+		token = result
+	} else if Tools.Config.GetString("token.type") == "token" {
+		var res map[string]string
+		for {
+			token = Tools.RandString(Tools.Config.GetInt("token.length"))
+			res, _ = Models.RedisDb.HGetAll(token).Result()
+			if len(res) != 0 {
+				token = Tools.RandString(Tools.Config.GetInt("token.length"))
+			} else {
+				break
+			}
+		}
+		Models.RedisDb.HMSet("token:"+token, map[string]interface{}{
+			"userId": data.Id,
+			"token":  token,
+		})
+
+		Models.RedisDb.Expire(
+			"token:"+token,
+			time.Duration(Tools.Config.GetInt64("token.expire")),
+		)
+	} else {
+		this.Fail(c, map[string]interface{}{
+			"code": Enum.CodeSystemError,
+			"msg":  "token参数配置错误",
+		})
 	}
-	Models.RedisDb.HMSet("token:"+token, map[string]interface{}{
-		"userId": data.Id,
-		"token":  token,
-	})
-	Models.RedisDb.Expire("token:"+token, time.Hour*2)
+
 	this.Success(c, map[string]string{
 		"token": token,
 	})

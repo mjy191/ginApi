@@ -9,7 +9,7 @@ import (
 type ApiRouter struct{}
 
 func (this ApiRouter) Router(r *gin.Engine) {
-	apiGroup := r.Group("/api", Middleware.CheckSignMiddleware{}.Handle(), Middleware.CheckTokenMiddleware{}.Handle())
+	apiGroup := r.Group("/api", Middleware.CheckSignMiddleware{}.Handle(), Middleware.CheckTokenMiddleware{}.Handle(), Middleware.CheckJwtMiddleware{}.Handle())
 	{
 		apiGroup.Any("/user/lists", Api.UserController{}.Lists)
 		apiGroup.Any("/user/edit", Api.UserController{}.Edit)
