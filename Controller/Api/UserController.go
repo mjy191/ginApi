@@ -111,7 +111,7 @@ func (this UserController) Login(c *gin.Context) {
 
 		Models.RedisDb.Expire(
 			"token:"+token,
-			time.Duration(Tools.Config.GetInt64("token.expire")),
+			time.Duration(Tools.Config.GetInt64("token.expire"))*time.Second,
 		)
 	} else {
 		this.Fail(c, map[string]interface{}{

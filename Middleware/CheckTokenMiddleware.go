@@ -15,6 +15,7 @@ func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if Tools.Config.GetString("token.type") != "token" {
 			c.Next()
+			return
 		}
 		param := make(map[string]interface{})
 		if err := c.ShouldBindBodyWith(&param, binding.JSON); err != nil {
