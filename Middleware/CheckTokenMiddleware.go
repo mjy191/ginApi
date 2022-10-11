@@ -19,8 +19,8 @@ func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		token := c.Request.Header.Get("x-token")
-		Logger.Println(fmt.Sprintf("x-token[%s]", token))
+		token := c.Request.Header.Get("X-token")
+		Logger.Println(fmt.Sprintf("X-token[%s]", token))
 		if token == "" {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 				"code": Enum.CodeTokenError,
