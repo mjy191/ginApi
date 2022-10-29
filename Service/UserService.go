@@ -112,6 +112,7 @@ func (this UserService) Edit(param *EditParam) {
 	user.Password = Tools.Sha1(param.Password)
 	user.Age = param.Age
 	phone.Phone = param.Phone
+	// 开启事务
 	tx := Models.DB.Begin()
 	tx.Model(&user).Where("id=?", param.Id).Updates(&user)
 	tx.Model(&phone).Where("userId=?", param.Id).Updates(&phone)

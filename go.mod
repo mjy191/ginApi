@@ -8,6 +8,7 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/spf13/viper v1.12.0
 	gorm.io/driver/mysql v1.3.5
 	gorm.io/gorm v1.23.8
