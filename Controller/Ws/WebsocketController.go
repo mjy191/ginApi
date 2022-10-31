@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -22,72 +23,89 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var conns []*websocket.Conn
-var connMap = make(map[string]*websocket.Conn)
-
+// 用户的uuid
 type userInfo struct {
-	Uuid string `json:"uuid""`
+	Uuid string `json:"uuid"`
 }
 
-var user userInfo
+// 服务结构
+type websocketServer struct {
+	userInfo
+	connMap map[string]*websocket.Conn
+	conns   []*websocket.Conn
+	msg     chan string
+}
 
-var msg = make(chan string, 20)
+var ws = &websocketServer{
+	connMap: make(map[string]*websocket.Conn),
+	msg:     make(chan string),
+}
 
 func (this WebsocketController) Handel(c *gin.Context) {
+	// 判断是否是websocket
+	if c.IsWebsocket() {
+
+	}
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	//报错uuid和conn
-	//connMap[uuid] = conn
-	// 保存所有的链接
-	msg <- "有人上线：" + fmt.Sprintf("%v", conn.RemoteAddr())
-	go broadcast(conns)
-	conns = append(conns, conn)
-	fmt.Println("打印链接", conns)
+	// 保存链接
+	ws.conns = append(ws.conns, conn)
+	fmt.Println("打印链接", ws.conns)
+	go listenBroadcast()
+	//广播消息上线了
+	ws.msg <- fmt.Sprintf("%v", conn.RemoteAddr()) + " 上线了"
+	// 阻塞主进程
 	for {
 		_, p, e := conn.ReadMessage()
 		if e != nil {
 			break
 		}
-		if er := json.Unmarshal(p, &user); er == nil {
-			connMap[user.Uuid] = conn
+
+		// 绑定uuid和conn关系
+		if strings.Contains(string(p), "uuid") {
+			if er := json.Unmarshal(p, &ws.userInfo); er == nil {
+				ws.connMap[ws.userInfo.Uuid] = conn
+				log.Println("connMap", ws.connMap)
+			}
+		} else {
+			// 发送广播消息
+			ws.msg <- fmt.Sprintf("%v：%s", conn.RemoteAddr(), string(p))
 		}
-		//保存对应关系
-		log.Println("connMap", connMap)
-		// 遍历链接，广播发送消息
 		log.Println(string(p))
-		msg <- fmt.Sprintf("%v：%s", conn.RemoteAddr(), string(p))
-		go broadcast(conns)
 	}
+	// 关闭链接
 	conn.WriteControl(websocket.CloseMessage, []byte("关闭链接"), time.Now().Add(time.Second))
 	// 删除conn从conns切片中
 	var index int
-	for key, val := range conns {
+	for key, val := range ws.conns {
 		if val == conn {
 			index = key
 			break
 		}
 	}
-	conns = append(conns[:index], conns[index+1:]...)
+	ws.conns = append(ws.conns[:index], ws.conns[index+1:]...)
 	// 删除connmap
-	for key, val := range connMap {
+	for key, val := range ws.connMap {
 		if val == conn {
-			delete(connMap, key)
+			delete(ws.connMap, key)
 			break
 		}
 	}
 	defer conn.Close()
-	log.Println(conns)
+	log.Println(ws.conns)
 	log.Println("服务关闭")
 }
 
-//广播消息
-func broadcast(conns []*websocket.Conn) {
-	m := <-msg
-	for i := range conns {
-		conns[i].WriteMessage(websocket.TextMessage, []byte(m))
+//监听广播消息，发送消息
+func listenBroadcast() {
+	for {
+		msg := <-ws.msg
+		for i := range ws.conns {
+			ws.conns[i].WriteMessage(websocket.TextMessage, []byte(msg))
+		}
 	}
 }
 
@@ -112,13 +130,13 @@ func (this WebsocketController) SendMsg(c *gin.Context) {
 	//fmt.Println(conns)
 	//go broadcast(conns)
 
-	//发送单个消息
-	mg := c.Request.FormValue("msg")
+	//发送消息给指定用户
+	msg := c.Request.FormValue("msg")
 	uuid := c.Request.FormValue("uuid")
-	log.Println(connMap)
-	conn, ok := connMap[uuid]
+	log.Println(ws.connMap)
+	conn, ok := ws.connMap[uuid]
 	if ok {
-		singleMsg(conn, mg)
+		singleMsg(conn, msg)
 	}
 	c.Writer.Write([]byte(fmt.Sprintf("%v", "发送成功")))
 }
