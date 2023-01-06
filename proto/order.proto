@@ -1,0 +1,19 @@
+//安装protoc https://github.com/protocolbuffers/protobuf/releases
+//下载 go install github.com/golang/protobuf/protoc-gent-go@latest
+//编译命令protoc --go_out=./ *.proto
+syntax="proto3";
+option go_package="./orderService";
+message order{
+  int64 id=1;
+  double price=2;
+  string name=3;
+  string tel=4;
+  string address=5;
+  string addTime=6;
+  orderItem orderItem=7;
+}
+message orderItem{
+  int64 goodsId=1;
+  string title=2;
+  double price=3;
+}

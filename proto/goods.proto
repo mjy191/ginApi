@@ -1,0 +1,17 @@
+//安装protoc https://github.com/protocolbuffers/protobuf/releases
+//下载 go install github.com/golang/protobuf/protoc-gent-go@latest
+//编译命令protoc --go_out=plugins=grpc:./ *.proto
+syntax="proto3";
+option go_package="./goodsService";
+service goodsService{
+  rpc AddGoods(AddGoodsReq) returns (AddGoodsRes);
+}
+message AddGoodsReq{
+  string title=1;
+  double price=2;
+  string content=3;
+}
+message AddGoodsRes{
+  string msg=1;
+  bool success=2;
+}
