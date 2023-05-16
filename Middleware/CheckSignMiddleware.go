@@ -14,6 +14,7 @@ import (
 type CheckSignMiddleware struct {
 }
 
+// Handle 验证签名中间件
 func (this CheckSignMiddleware) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		paramSign := c.Query("sign")

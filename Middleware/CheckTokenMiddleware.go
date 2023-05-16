@@ -13,6 +13,7 @@ import (
 
 type CheckTokenMiddleware struct{}
 
+// Handle 验证token中间件
 func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if Tools.Config.GetString("token.type") != "token" {
