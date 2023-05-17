@@ -19,12 +19,13 @@ type UserController struct {
 }
 
 func (this UserController) Lists(c *gin.Context) {
-	var userParam service.AddParam
-	err := c.ShouldBindBodyWith(&userParam, binding.JSON)
-	if err != nil {
-		panic(err)
+	var ListParam service.ListParam
+	// 根据 body为空会报错EOF err.Error() != "EOF" ,查询条件是否必填为判断
+	if err := c.ShouldBindBodyWith(&ListParam, binding.JSON); err != nil && err.Error() != "EOF" {
+		tools.GetError(err, ListParam)
+		return
 	}
-	data, _ := service.UserService{}.Lists(&userParam)
+	data, _ := service.UserService{}.Lists(&ListParam)
 	response.Success(c, &response.Response{Data: data})
 }
 

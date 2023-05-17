@@ -19,7 +19,7 @@ func init() {
 	})
 	_, err = RedisDb.Ping().Result()
 	if err != nil {
-		panic(response.Response{
+		panic(&response.Response{
 			Code: enum.CodeSystemError,
 			Msg:  "redis服务器错误",
 		})

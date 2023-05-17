@@ -41,7 +41,7 @@ func GetError(err error, r interface{}) {
 	s := reflect.TypeOf(r)
 	errs, ok := err.(validator.ValidationErrors)
 	if !ok {
-		panic(response.Response{
+		panic(&response.Response{
 			Code: enum.CodeParamError,
 			Msg:  err.Error(),
 		})
@@ -52,18 +52,18 @@ func GetError(err error, r interface{}) {
 		errTagText := field.Tag.Get(errTag)
 		errText := field.Tag.Get("msg")
 		if errTagText != "" {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeParamError,
 				Msg:  errTagText,
 			})
 		}
 		if errText != "" {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeParamError,
 				Msg:  errText,
 			})
 		}
-		panic(response.Response{
+		panic(&response.Response{
 			Code: enum.CodeParamError,
 			Msg:  fieldError.Field() + ":" + fieldError.Tag(),
 		})

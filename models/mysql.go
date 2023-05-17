@@ -59,6 +59,6 @@ func init() {
 
 	if err != nil {
 		fmt.Println("mysql conn err:", err)
-		panic(response.Response{Code: enum.CodeSystemError, Msg: "mysql conn err:"})
+		panic(&response.Response{Code: enum.CodeSystemError, Msg: "mysql conn err:"})
 	}
 }

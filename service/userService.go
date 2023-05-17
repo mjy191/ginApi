@@ -42,6 +42,12 @@ type AddParam struct {
 	Phone string `form:"phone" json:"phone" binding:"required" msg:"手机不能为空"`
 }
 
+type ListParam struct {
+	Name string `form:"name" json:"name"`
+	Age  int    `form:"age" json:"age"`
+	Page int    `form:"page" json:"page"`
+}
+
 type EditParam struct {
 	AddParam
 	IdParam
@@ -64,7 +70,7 @@ func (u *UserCopy) MarshalJSON() ([]byte, error) {
 	return json.Marshal(user)
 }
 
-func (this UserService) Lists(userParam *AddParam) ([]*UserCopy, error) {
+func (this UserService) Lists(userParam *ListParam) ([]*UserCopy, error) {
 	var users []*models.User
 	err := models.DB.Find(&users).Error
 	if err != nil {
@@ -93,7 +99,7 @@ func (this UserService) Add(param *AddParam) int {
 	tx.Model(&userCopy).Where("username=?", user.UserName).First(&userCopy)
 	if userCopy.Id != 0 {
 		tx.Rollback()
-		panic(response.Response{
+		panic(&response.Response{
 			Code: enum.CodeParamError,
 			Msg:  "用户名已经注册",
 		})
@@ -131,7 +137,7 @@ func (this UserService) Login(param *LoginParam) (models.User, error) {
 	var user models.User
 	models.DB.Model(&user).Where("username=?", param.UserName).First(&user)
 	if tools.Sha1(param.Password) != user.Password {
-		panic(response.Response{
+		panic(&response.Response{
 			Code: enum.CodeParamError,
 			Msg:  "密码错误",
 		})

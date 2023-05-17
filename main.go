@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"ginApi/common/config"
 	"ginApi/common/enum"
 	"ginApi/common/response"
@@ -16,7 +17,8 @@ func main() {
 	// 捕获异常转换成正常的http请求
 	r.Use(gin.CustomRecovery(func(c *gin.Context, err any) {
 		// 判断是不是主动抛出的错误类型
-		res, ok := err.(response.Response)
+		res, ok := err.(*response.Response)
+		fmt.Println(res)
 		// 未知的类型统一返回服务器开小差
 		if !ok {
 			response.Fail(c, &response.Response{
@@ -26,7 +28,7 @@ func main() {
 			return
 		}
 		// 返回主动抛出的错误
-		response.Fail(c, &res)
+		response.Fail(c, res)
 	}))
 	// 环境配置
 	if config.Viper.Get("env") == "prod" {

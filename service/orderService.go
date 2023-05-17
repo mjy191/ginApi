@@ -16,9 +16,9 @@ type orderCopy struct {
 }
 
 type OrderParam struct {
-	Id     int   `form:"id" json:"id"`
-	UserId int   `form:"userId" json:"userId"`
-	Page   int64 `form:"page" json:"page" binding:"omitempty,min=1" min_msg:"page最小值1"`
+	Id     int   `form:"id" json:"id" binding:"-"`
+	UserId int   `form:"userId" json:"userId" binding:"-"`
+	Page   int64 `form:"page" json:"page" binding:"omitempty,min=1" min_msg:"page最小值1" default:"1"`
 	Status int   `form:"status" json:"status" binding:"omitempty,oneof=1 2 3" msg:"status值错误"`
 }
 

@@ -23,14 +23,14 @@ func (this CheckTokenMiddleware) Handle() gin.HandlerFunc {
 		token := c.Request.Header.Get("X-token")
 		myLogger.Println(fmt.Sprintf("X-token[%s]", token))
 		if token == "" {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeTokenError,
 				Msg:  enum.ErrMsg[enum.CodeTokenError],
 			})
 		}
 		users, _ := models.RedisDb.HGetAll("token:" + token).Result()
 		if len(users) == 0 {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeTokenError,
 				Msg:  enum.ErrMsg[enum.CodeTokenError],
 			})

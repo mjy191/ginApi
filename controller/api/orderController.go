@@ -15,7 +15,8 @@ type OrderController struct {
 
 func (this OrderController) Lists(c *gin.Context) {
 	var param service.OrderParam
-	if err := c.ShouldBindBodyWith(&param, binding.JSON); err != nil {
+	// 根据 body为空会报错EOF err.Error() != "EOF" ,查询条件是否必填为判断
+	if err := c.ShouldBindBodyWith(&param, binding.JSON); err != nil && err.Error() != "EOF" {
 		tools.GetError(err, param)
 		return
 	}

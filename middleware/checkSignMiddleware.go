@@ -21,7 +21,7 @@ func (this CheckSignMiddleware) Handle() gin.HandlerFunc {
 		paramSign := c.Query("sign")
 		data, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeSignError,
 				Msg:  enum.ErrMsg[enum.CodeSignError],
 			})
@@ -36,7 +36,7 @@ func (this CheckSignMiddleware) Handle() gin.HandlerFunc {
 		)
 		myLogger.Println(signPreStr)
 		if sign != paramSign {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeSignError,
 				Msg:  enum.ErrMsg[enum.CodeSignError],
 			})

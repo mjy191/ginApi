@@ -21,14 +21,14 @@ func (this CheckJwtMiddleware) Handle() gin.HandlerFunc {
 		token := c.Request.Header.Get("X-token")
 		myLogger.Println(fmt.Sprintf("X-token[%s]", token))
 		if token == "" {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeTokenError,
 				Msg:  enum.ErrMsg[enum.CodeTokenError],
 			})
 		}
 		userId, err := jwt.Jwt{}.ValidateToken(token)
 		if err != nil {
-			panic(response.Response{
+			panic(&response.Response{
 				Code: enum.CodeTokenError,
 				Msg:  enum.ErrMsg[enum.CodeTokenError],
 			})

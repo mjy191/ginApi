@@ -24,7 +24,7 @@ func (this LoggerMiddleware) Handle() gin.HandlerFunc {
 			var err error
 			body, err = ioutil.ReadAll(c.Request.Body)
 			if err != nil {
-				panic(response.Response{
+				panic(&response.Response{
 					Code: enum.CodeParamError,
 					Msg:  "获取body错误",
 				})
