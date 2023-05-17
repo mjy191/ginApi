@@ -8,18 +8,21 @@
 
 例如：用户请求登录/api/user/login
 
-返回如下数据
+统一返回标准数据结构
 
 ```
 {
 	"code": 1,
+	"msg": "success",
 	"data": {
-		"token": "PqrUdnsC0kE7VARhqoMGY5Jm4zwkfixr"
+		"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjEsImV4cCI6MTY4NDM0Mzk1NSwiaXNzIjoiYWRtaW4ifQ.x7JtRrsWUehL1helcv2Ll9CPJ8Ov1qyoCCt_dJuAO_0"
 	},
-	"logid": "cd79e47c610343cbb3345c8603e7dacd",
-	"msg": "success"
+	"logid": "33666c1ef0d54fcfa73b409cc2285c5e",
+	"timestamp": 1684336755
 }
 ```
+logid查询日志id
+timestamp当时时间戳
 进入的日志目录，根据返回的logid<span style="color:red">cd79e47c610343cbb3345c8603e7dacd</span>查找，一次http请求的日志
 ```
 [root@localhost 202209]# cd logs/202209
