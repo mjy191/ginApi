@@ -8,17 +8,15 @@ import (
 	_ "ginApi/common/myLogger"
 	"ginApi/common/response"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 type LoggerMiddleware struct{}
 
 func (this LoggerMiddleware) Handle() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		myLogger.Logid = strings.Replace(uuid.New().String(), "-", "", -1)
+		myLogger.GenerateLogId()
 		var body []byte
 		if c.Request.Method != http.MethodGet {
 			var err error

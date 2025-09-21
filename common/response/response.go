@@ -32,7 +32,7 @@ func New(res *Response) *Response {
 		res.Msg = enum.ErrMsg[enum.CodeSuccess]
 	}
 	if res.Logid == "" {
-		res.Logid = myLogger.Logid
+		res.Logid = myLogger.LogId
 	}
 	res.Timestamp = time.Now().Unix()
 	return res
