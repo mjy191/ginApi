@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"ginApi/controller/api"
-	"ginApi/middleware"
+	"ginApi/http/controller/api"
+	"ginApi/http/middleware"
 	"github.com/gin-gonic/gin"
 )
 

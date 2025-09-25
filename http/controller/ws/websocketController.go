@@ -3,7 +3,7 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"ginApi/controller"
+	"ginApi/http/controller"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"log"

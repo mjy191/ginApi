@@ -6,7 +6,7 @@ import (
 	"ginApi/common/enum"
 	"ginApi/common/response"
 	"ginApi/common/tools"
-	"ginApi/models"
+	"ginApi/http/models"
 )
 
 type UserService struct {

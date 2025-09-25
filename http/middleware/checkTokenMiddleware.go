@@ -6,7 +6,7 @@ import (
 	"ginApi/common/enum"
 	"ginApi/common/myLogger"
 	"ginApi/common/response"
-	"ginApi/models"
+	"ginApi/http/models"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

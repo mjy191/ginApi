@@ -3,8 +3,8 @@ package api
 import (
 	"ginApi/common/response"
 	"ginApi/common/tools"
-	"ginApi/controller"
-	"ginApi/service"
+	"ginApi/http/controller"
+	"ginApi/http/service"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )

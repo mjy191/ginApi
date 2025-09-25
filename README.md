@@ -1,6 +1,6 @@
 ## 1.基本介绍
 ### 1.1 项目介绍
-> ginApi是一个基于gin开发的框架，集成了api签名、鉴权、全链路日志追踪，减少在项目中重复造轮子
+> ginApi是一个基于gin开发的框架，集成了api签名、jwt鉴权、中间件、mysql、redis、全链路日志追踪，减少在项目中重复造轮子
 ### 1.2 链路日志追踪
 通过logid可以追踪一次http请求的日志，logid均在接口中返回
 
@@ -10,7 +10,7 @@
 
 统一返回标准数据结构
 
-```
+```json
 {
 	"code": 1,
 	"msg": "success",
@@ -24,7 +24,7 @@
 logid查询日志id
 timestamp当时时间戳
 进入的日志目录，根据返回的logid<span style="color:red">cd79e47c610343cbb3345c8603e7dacd</span>查找，一次http请求的日志
-```
+```shell
 [root@localhost 202209]# cd logs/202209
 [root@localhost 202209]# grep cd79e47c610343cbb3345c8603e7dacd 2022090312.log 
 2022/09/03 12:11:42 logid[cd79e47c610343cbb3345c8603e7dacd]  url[/api/user/login?sign=f9e9eb19af3aa19f0fe83bc5b43742c9ec65dc57] ip[127.0.0.1] method[POST] post_data[] body[{"username": "zhangsan", "password": "123456", "token": "A5tvtvTZR56Vekj8K7V71I25OpVuQ8jg"}]
@@ -35,46 +35,48 @@ timestamp当时时间戳
 
 ### 1.3 框架架构
 ```
-        ┌ common                             (公共模块)
-        │   ├── enum                         (枚举)
-        │   ├── myLogger                     (自定义日志)
-        │   ├── tools                        (工具文件)
-        │   ├── response                     (定义的统一返回json结构体)
-        │   ├── config                       (获取配置的方法)
-        │   └── jwt                          (jwt)
-        ├── config                           (配置文件)
-        ├── controller                       (控制器)
-        │   ├── admin                        (后台控制器)
-        │   └── api                          (api控制器)
-        ├── logs                             (日志目录)
-        ├── middleware                       (中间件)
-        │   ├── checkJwtMiddleware.go        (校验jwt中间件)
-        │   ├── checkSignMiddleware.go       (签名中间件)
-        │   ├── checkTokenMiddleware.go      (校验token中间件)          
-        │   └── loggerMiddleware.go          (日志中间件)
-        ├── models                           (中间件层)
-        │   ├── mysql.go                     (mysql model)          
-        │   ├── orderModel.go                (订单 model)          
-        │   ├── userModel.go                 (用户 model)          
-        │   ├── phoneModel.go                (手机号码 model)          
-        │   └── redis.go                     (redis model)
-        ├── routers                          (路由)
-        │   ├── adminRouter.go               (后台路由)
-        │   ├── apiRouter.go                 (api路由)
-        │   ├── websocketRouter.go           (websocket路由)
-        │   └── router.go.go                 (路由) 
-        ├── proto                            (protobuf grpc的demo)
-        │   ├── goodsService                 (生成商品的grpc服务)
-        │   ├── orderService                 (生成订单的grpc服务)
-        │   ├── goods.proto                  (定义商品的grpc服务)
-        │   └── order.proto                  (定义订单的grpc服务)
-        ├── service                          (服务层)
-        ├── static                           (静态资源)
-        │   ├── css                          (css文件)
-        │   ├── image                        (图片文件)
-        │   └── js                           (js文件)
-        └── template                         (路由层)
-            └── Admin                        (后台模板文件)                        
+        ┌ common                                      (公共模块)
+        │   ├── enum                                  (枚举)
+        │   ├── myLogger                              (自定义日志)
+        │   ├── tools                                 (工具文件)
+        │   ├── response                              (定义的统一返回json结构体)
+        │   ├── config                                (获取配置的方法)
+        │   └── jwt                                   (jwt)
+        ├── config                                    (配置文件)
+        ├── http                                      (http服务)
+        │    ├── controller                           (控制器)
+        │    │       ├── admin                        (后台控制器)
+        │    │       └── api                          (api控制器)
+        │    ├── middleware                           (中间件)
+        │    │       ├── checkJwtMiddleware.go        (校验jwt中间件)
+        │    │       ├── checkTokenMiddleware.go      (校验token中间件)          
+        │    │       └── loggerMiddleware.go          (日志中间件)
+        │    ├── models                               (中间件层)
+        │    │       ├── mysql.go                     (mysql model)          
+        │    │       ├── orderModel.go                (订单 model)          
+        │    │       ├── userModel.go                 (用户 model)          
+        │    │       ├── phoneModel.go                (手机号码 model)          
+        │    │       └── redis.go                     (redis model)
+        │    ├── routers                              (路由)
+        │    │       ├── adminRouter.go               (后台路由)
+        │    │       ├── apiRouter.go                 (api路由)
+        │    │       ├── websocketRouter.go           (websocket路由)
+        │    │       └── router.go.go                 (路由)
+        │    ├── service                              (服务层)
+        │    ├── static                               (静态资源)
+        │    │       ├── css                          (css文件)
+        │    │       ├── image                        (图片文件)
+        │    │       └── js                           (js文件)
+        │    └──template                              (路由层)
+        │            └── Admin                        (后台模板文件) 
+        ├── logs                                      (日志目录)
+        ├── proto                                     (protobuf grpc的demo)
+        │   ├── goodsService                          (生成商品的grpc服务)
+        │   ├── orderService                          (生成订单的grpc服务)
+        │   ├── goods.proto                           (定义商品的grpc服务)
+        │   └── order.proto                           (定义订单的grpc服务)
+        └── main.go
+                                
 ```
 
 ## 2. 使用说明
@@ -88,7 +90,7 @@ timestamp当时时间戳
 
 使用 `Goland` 等编辑工具
 
-```bash
+```shell
 
 # 克隆项目
 git clone https://github.com/mjy191/ginApi.git

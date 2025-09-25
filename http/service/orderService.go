@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"ginApi/common/enum"
 	"ginApi/common/tools"
-	"ginApi/models"
+	"ginApi/http/models"
 )
 
 var pageSize int64 = 5

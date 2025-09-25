@@ -5,8 +5,8 @@ import (
 	"ginApi/common/config"
 	"ginApi/common/enum"
 	"ginApi/common/response"
-	"ginApi/middleware"
-	"ginApi/routers"
+	"ginApi/http/middleware"
+	"ginApi/http/routers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,9 +36,9 @@ func main() {
 	} else {
 		gin.SetMode(gin.DebugMode)
 	}
-	r.Static("/static", "./static")
+	r.Static("/http/static", "./static")
 	//二级目录写法
-	r.LoadHTMLGlob("template/**/*")
+	r.LoadHTMLGlob("http/template/**/*")
 	routers.Router{}.Router(r)
 	r.Run(":8000")
 }
